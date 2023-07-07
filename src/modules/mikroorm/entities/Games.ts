@@ -6,7 +6,6 @@ export class Games {
   name!: string;
 
   @Index({ name: 'id' })
-  @Unique({ name: 'id_2' })
   @PrimaryKey()
   id!: number;
 }

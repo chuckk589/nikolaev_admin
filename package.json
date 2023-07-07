@@ -21,13 +21,15 @@
     "prebuild": "rimraf dist",
     "build": "nest build&&yarn run vite",
     "vite": "cd vue&&yarn run build",
-    "start:dev": "SET NODE_ENV=development&&nodemon src/main.ts",
+    "start:dev": "nest start --watch",
     "start:prod": "node dist/main",
     "test": "jest",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "schema:initial": "mikro-orm schema:create --run",
+    "schema:clean": "yarn mikro-orm schema:fresh --run&&mikro-orm seeder:run --class=DevSeeder",
     "schema:seeder": "mikro-orm seeder:run --class=ConfigSeeder",
-    "schema:update": "yarn mikro-orm schema:update --run"
+    "schema:devseeder": "mikro-orm seeder:run --class=DevSeeder",
+    "schema:update": "mikro-orm schema:update --run"
   },
   "dependencies": {
     "@mikro-orm/core": "^5.1.3",

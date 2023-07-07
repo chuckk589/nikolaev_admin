@@ -7,32 +7,50 @@ const router = createRouter({
       path: '/',
       name: 'Home',
       component: () => import('../components/Container.vue'),
-      redirect: '/users',
+      redirect: '/dashboard',
       children: [
         {
-          path: 'users',
-          name: 'users',
-          component: () => import('../views/Users.vue'),
+          path: 'dashboard',
+          name: 'dashboard',
+          component: () => import('../views/Dashboard.vue'),
           meta: {
-            roles: ['admin'],
+            roles: ['admin', 'user'],
           },
         },
         {
-          path: 'launches',
-          name: 'launches',
-          component: () => import('../views/Launches.vue'),
+          path: 'udashboard',
+          name: 'udashboard',
+          component: () => import('../views/UserDashboard.vue'),
           meta: {
-            roles: ['admin', 'moderator'],
+            roles: ['user'],
           },
         },
-
         {
-          path: 'settings',
-          name: 'settings',
-          component: () => import('../views/Settings.vue'),
+          path: 'clients',
+          name: 'clients',
+          component: () => import('../views/Clients.vue'),
           meta: {
             roles: ['admin'],
           },
+          redirect: '/clients/zones',
+          children: [
+            {
+              path: 'zones',
+              name: 'zones',
+              component: () => import('../views/Zones.vue'),
+              meta: {
+                roles: ['admin'],
+              },
+            },
+            {
+              path: 'launches',
+              name: 'launches',
+              component: () => import('../views/Launches.vue'),
+              meta: {
+                roles: ['admin'],
+              },
+            },
+          ],
         },
       ],
     },
@@ -44,15 +62,15 @@ const router = createRouter({
   ],
 });
 
-router.beforeEach((to, from, next) => {
-  //check page is protected or not
-  console.log('meta', to.meta.roles, localStorage.getItem('role'));
-  if (!to.meta.roles) return next();
-  if (to.meta.roles.includes(localStorage.getItem('role'))) return next();
-  else {
-    router.push({
-      name: 'login',
-    });
-  }
-});
+// router.beforeEach((to, from, next) => {
+//   //check page is protected or not
+//   // console.log('meta', to.meta.roles, localStorage.getItem('role'));
+//   if (!to.meta.roles) return next();
+//   if (to.meta.roles.includes(localStorage.getItem('role'))) return next();
+//   else {
+//     router.push({
+//       name: 'login',
+//     });
+//   }
+// });
 export default router;

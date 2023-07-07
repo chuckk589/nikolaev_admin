@@ -1,31 +1,38 @@
 <template>
   <v-app>
-    <v-app-bar app>
+    <!-- <v-app-bar app>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-    </v-app-bar>
-    <v-navigation-drawer permanent v-model="drawer">
+    </v-app-bar> -->
+    <v-navigation-drawer permanent>
+      <div class="mb-5" v-if="authStore.role == 'admin'">Главный администратор</div>
+      <div class="mb-5">
+        <v-btn-toggle v-model="lang" rounded="0" color="deep-purple-accent-3" group>
+          <v-btn value="ru"> Ru </v-btn>
+          <v-btn value="en"> En </v-btn>
+        </v-btn-toggle>
+      </div>
       <v-list>
-        <v-list-item to="/users" value="1" active-color="#1867C0" v-if="authStore.role == 'admin'">
-          <template v-slot:prepend>
-            <v-icon class="mr-5" icon="mdi-account"></v-icon>
-          </template>
-
-          <v-list-item-title>Пользователи</v-list-item-title>
+        <v-list-item to="/dashboard" value="1" active-color="#1867C0" v-if="authStore.role == 'admin'">
+          <v-list-item-title>Главная</v-list-item-title>
         </v-list-item>
-        <v-list-item to="/launches" value="2" active-color="#1867C0">
-          <template v-slot:prepend>
-            <v-icon class="mr-5" icon="mdi-account"></v-icon>
-          </template>
-
-          <v-list-item-title>Запуски</v-list-item-title>
+        <v-list-item to="/clients" value="2" active-color="#1867C0" v-if="authStore.role == 'admin'">
+          <v-list-item-title>Клиенты</v-list-item-title>
         </v-list-item>
-        <!-- <v-list-item to="/settings" value="3" active-color="#1867C0" v-if="authStore.role == 'admin'">
-          <template v-slot:prepend>
-            <v-icon class="mr-5" icon="mdi-cog"></v-icon>
-          </template>
-
-          <v-list-item-title>Конфиги</v-list-item-title>
-        </v-list-item> -->
+        <v-list-item to="/udashboard" value="3" active-color="#1867C0" v-if="authStore.role == 'user'">
+          <v-list-item-title>Главная</v-list-item-title>
+        </v-list-item>
+        <v-list-item disabled active-color="#1867C0" v-if="authStore.role == 'user'">
+          <v-list-item-title>Быстрый старт</v-list-item-title>
+        </v-list-item>
+        <v-list-item disabled active-color="#1867C0" v-if="authStore.role == 'user'">
+          <v-list-item-title>Игровые сессии</v-list-item-title>
+        </v-list-item>
+        <v-list-item disabled active-color="#1867C0" v-if="authStore.role == 'user'">
+          <v-list-item-title>Настройка</v-list-item-title>
+        </v-list-item>
+        <v-list-item disabled active-color="#1867C0" v-if="authStore.role == 'user'">
+          <v-list-item-title>Тарифы</v-list-item-title>
+        </v-list-item>
       </v-list>
       <template v-slot:append>
         <div class="pa-2">
@@ -38,23 +45,33 @@
         <router-view />
       </v-container>
     </v-main>
-    <edit-component />
   </v-app>
 </template>
 
 <script>
 import { useAuthStore } from '../stores/useAuthStore';
-import EditComponent from './EditComponent.vue';
 export default {
   name: 'ContainerView',
-  components: {
-    EditComponent,
-  },
   data() {
     return {
+      lang: 'ru',
       authStore: useAuthStore(),
-      drawer: false,
     };
+  },
+  mounted() {
+    this.authStore.$reset();
   },
 };
 </script>
+<style>
+.v-navigation-drawer__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+}
+.v-navigation-drawer__content .v-list {
+  width: 100%;
+  text-align: center;
+}
+</style>

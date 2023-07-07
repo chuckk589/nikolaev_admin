@@ -3,16 +3,14 @@ import { Users } from 'src/modules/mikroorm/entities/Users';
 export class RetrieveUserDto {
   constructor(user: Partial<Users>) {
     this.id = user.id.toString();
-    this.username = user.username;
+    this.name = user.name;
+    this.surname = user.surname;
+    this.phone = user.phone;
     this.email = user.email;
-    this.role = user.role.id.toString();
-    this.createdAt = user.createdAt;
-    this.zone = user.zone?.id.toString();
   }
   id: string;
-  username: string;
+  name: string;
+  surname: string;
+  phone: string;
   email: string;
-  role: string;
-  createdAt: Date;
-  zone: string;
 }

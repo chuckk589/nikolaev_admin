@@ -12,9 +12,9 @@
   },
   "dependencies": {
     "@mdi/font": "5.9.55",
-    "ag-grid-community": "^27.3.0",
-    "ag-grid-enterprise": "^27.3.0",
-    "ag-grid-vue3": "^27.3.0",
+    "ag-grid-community": "^30.0.3",
+    "ag-grid-enterprise": "^30.0.3",
+    "ag-grid-vue3": "^30.0.3",
     "axios": "^0.27.2",
     "mitt": "^3.0.0",
     "pageable": "^0.6.8",
@@ -42,7 +42,7 @@
     "prettier": "^2.5.1",
     "typescript": "~4.7.4",
     "vite": "^2.9.12",
-    "vite-plugin-vuetify": "^1.0.0-alpha.0",
+    "vite-plugin-vuetify": "^1.0.2",
     "vue-cli-plugin-vuetify": "~2.5.1",
     "vue-tsc": "^0.38.1"
   }

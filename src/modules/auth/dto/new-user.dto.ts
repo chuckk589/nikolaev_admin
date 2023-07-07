@@ -2,7 +2,11 @@ import { IsEmail, IsString, Length } from 'class-validator';
 
 export class NewUserDto {
   @IsString()
-  username: string;
+  name: string;
+  @IsString()
+  surname: string;
+  @IsString()
+  phone: string;
   @IsString()
   @Length(8, 20)
   password: string;

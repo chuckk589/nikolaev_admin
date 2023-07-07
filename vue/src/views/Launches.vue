@@ -1,76 +1,108 @@
 <template>
-  <AgGridVue
-    class="ag-theme-alpine"
-    :column-defs="columnDefs"
-    :default-col-def="defaultColDef"
-    animateRows
-    suppressCellFocus
-    :get-row-id="getRowId"
-    :row-data="rowData"
-    rowSelection="multiple"
-    suppressRowClickSelection
-    pagination
-    style="height: 100%"
-    @grid-ready="onGridReady"
-    suppressExcelExport
-  >
-  </AgGridVue>
+  <v-card class="h-100">
+    <v-card-title class="d-flex flex-column">
+      <h2>{{ header }}</h2>
+      <span>Статистика игровых сессий</span>
+    </v-card-title>
+    <v-card-text class="h-100">
+      <AgGridVue
+        class="ag-theme-alpine"
+        :column-defs="columnDefs"
+        :default-col-def="defaultColDef"
+        :get-row-id="getRowId"
+        :row-data="rowData"
+        rowSelection="multiple"
+        suppressCellFocus
+        animateRows
+        suppressRowClickSelection
+        suppressContextMenu
+        pagination
+        style="height: 90%"
+        @grid-ready="onGridReady"
+      >
+      </AgGridVue>
+    </v-card-text>
+    <v-dialog></v-dialog>
+  </v-card>
 </template>
 
 <script>
 import { AgGridVue } from 'ag-grid-vue3';
-import { useAuthStore } from '../stores/useAuthStore';
 export default {
   name: 'LaunchesView',
   components: {
     AgGridVue,
-    // eslint-disable-next-line vue/no-unused-components
   },
   data() {
     return {
-      authStore: useAuthStore(),
       columnDefs: [
-        { field: 'gameAlias', headerName: 'gameAlias' },
-        { field: 'zoneAlias', headerName: 'zoneAlias', rowGroup: true, hide: true },
-        { field: 'zoneName', headerName: 'zoneName' },
-        { field: 'zoneHardwareKey', headerName: 'zoneHardwareKey' },
-        { field: 'zoneHardwareKey', headerName: 'zoneHardwareKey' },
-        { field: 'zoneRegistered', headerName: 'zoneRegistered', valueFormatter: this.boolFormatter },
-        { field: 'zoneDisabled', headerName: 'zoneDisabled', valueFormatter: this.boolFormatter },
+        {
+          headerName: 'ID',
+          field: 'id',
+          maxWidth: 150,
+        },
+        { field: 'gameAlias', headerName: 'Название игры' },
         {
           field: 'createdAt',
-          headerName: 'Дата',
-          sortable: true,
-          valueFormatter: (params) => params.value && new Date(params.value).toLocaleString(),
+          headerName: 'Дата запуска',
+          valueFormatter: (params) => new Date(params.value).toLocaleDateString(),
+          filter: 'agDateColumnFilter',
+          filterParams: {
+            maxNumConditions: 1,
+            comparator: (filterLocalDateAtMidnight, cellValue) => {
+              if (cellValue == null) return -1;
+              const cellDate = new Date(cellValue);
+
+              if (filterLocalDateAtMidnight.getTime() === cellDate.getTime()) {
+                return 0;
+              }
+
+              if (cellDate < filterLocalDateAtMidnight) {
+                return -1;
+              }
+
+              if (cellDate > filterLocalDateAtMidnight) {
+                return 1;
+              }
+              return 0;
+            },
+            filterOptions: ['inRange'],
+            buttons: ['reset'],
+          },
         },
+        { field: 'createdAt', headerName: 'Время запуска', valueFormatter: (params) => new Date(params.value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) },
       ],
+
       gridApi: null,
+      columnApi: null,
       defaultColDef: {
         sortable: true,
         flex: 1,
-        resizable: true,
-        filter: true,
+        menuTabs: ['filterMenuTab', 'columnsMenuTab'],
       },
       getRowId: function (params) {
         return params.data.id;
       },
       rowData: [],
+      header: '',
     };
   },
   methods: {
-    boolFormatter(params) {
-      return params.value === undefined ? '' : params.value ? 'Да' : 'Нет';
-    },
     onGridReady(params) {
       this.gridApi = params.api;
-      this.$http({ method: 'GET', url: `/v1/launches/` }).then((res) => {
+      this.$http({ method: 'GET', url: `/v1/launches?zoneId=${this.$route.query.zoneId}` }).then((res) => {
         this.rowData = res.data;
-        this.gridApi.setRowData(this.rowData);
-        params.columnApi.setRowGroupColumns(this.authStore.role === 'admin' ? ['zoneAlias'] : []);
-        params.columnApi.setColumnVisible('zoneAlias', this.authStore.role !== 'admin');
-        this.authStore.role === 'admin' && params.columnApi.autoSizeColumn('zoneAlias');
+        this.header = this.$route.query.zoneName;
       });
     },
   },
 };
 </script>
+<style>
+.ag-filter-condition {
+  display: none;
+}
+.ag-filter-condition:nth-of-type(2) {
+  display: none;
+}
+</style>

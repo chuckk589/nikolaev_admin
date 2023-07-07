@@ -53,6 +53,9 @@ export class Zones {
   @Property({ columnType: 'tinyint(1)', default: false })
   hideOnAdminPanel = false;
 
-  @OneToMany(() => Users, (user) => user.zone)
-  users: Collection<Users> = new Collection<Users>(this);
+  @OneToMany(() => Launches, (launch) => launch.zone)
+  launches = new Collection<Launches>(this);
+
+  @ManyToOne({ entity: () => Users, nullable: true })
+  user: Users;
 }

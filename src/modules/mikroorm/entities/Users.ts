@@ -1,4 +1,15 @@
-import { Entity, Index, ManyToOne, OptionalProps, PrimaryKey, Property, Unique, BeforeUpdate, BeforeCreate } from '@mikro-orm/core';
+import {
+  Entity,
+  ManyToOne,
+  PrimaryKey,
+  Property,
+  Unique,
+  BeforeCreate,
+  Collection,
+  OneToMany,
+  BeforeUpdate,
+  EventArgs,
+} from '@mikro-orm/core';
 import { UserRoles } from './UserRoles';
 import { compare, hash } from 'bcrypt';
 import { CustomBaseEntity } from './CustomBaseEntity';
@@ -13,9 +24,14 @@ export class Users extends CustomBaseEntity {
   @PrimaryKey()
   id!: number;
 
-  @Unique()
   @Property({ nullable: true })
-  username?: string;
+  name?: string;
+
+  @Property({ nullable: true })
+  surname?: string;
+
+  @Property({ nullable: true })
+  phone?: string;
 
   @Unique()
   @Property({ nullable: true })
@@ -27,9 +43,18 @@ export class Users extends CustomBaseEntity {
   @ManyToOne({ entity: () => UserRoles, nullable: true })
   role?: UserRoles;
 
+  @OneToMany(() => Zones, (zone) => zone.user)
+  zones = new Collection<Zones>(this);
+
   @BeforeCreate()
   async beforeCreate(): Promise<void> {
     if (this.password) {
+      this.password = await hash(this.password, 10);
+    }
+  }
+  @BeforeUpdate()
+  async beforeUpdate(args: EventArgs<Users>): Promise<void> {
+    if (args.changeSet.payload.password) {
       this.password = await hash(this.password, 10);
     }
   }
@@ -39,6 +64,4 @@ export class Users extends CustomBaseEntity {
     }
     return false;
   }
-  @ManyToOne({ entity: () => Zones, nullable: true })
-  zone: Zones;
 }
