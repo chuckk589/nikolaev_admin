@@ -8,7 +8,7 @@ export class GamesService {
   constructor(private readonly em: EntityManager) {}
 
   async findAll() {
-    const games = await this.em.find(Games, {});
+    const games = await this.em.find(Games, { hideOnAdminPanel: false });
     return games.map((game) => new RetrieveGameDto(game));
   }
 }

@@ -15,6 +15,7 @@ export class ZonesService {
   async update(id: number, updateZoneAndUserDto: UpdateZoneAndUserDto) {
     const zone = await this.em.findOneOrFail(Zones, id, { populate: ['launches.game', 'user'] });
     zone.name = updateZoneAndUserDto.name || zone.name;
+    zone.markedAsDeleted = updateZoneAndUserDto.markedAsDeleted ?? zone.markedAsDeleted;
     if (zone.user) {
       zone.user.name = updateZoneAndUserDto.username || zone.user.name;
       zone.user.surname = updateZoneAndUserDto.surname || zone.user.surname;
@@ -25,7 +26,9 @@ export class ZonesService {
     return new RetrieveZoneDto(zone);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} zone`;
+  async remove(id: number) {
+    const zone = await this.em.findOneOrFail(Zones, id);
+    zone.markedAsDeleted = true;
+    return await this.em.persistAndFlush(zone);
   }
 }

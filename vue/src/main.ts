@@ -1,4 +1,4 @@
-import { createApp } from 'vue';
+import { createApp, reactive } from 'vue';
 import App from './App.vue';
 import router from './router';
 import vuetify from './plugins/vuetify';
@@ -17,7 +17,7 @@ app.use(vuetify);
 app.use(createPinia());
 app.config.globalProperties.$http = axios;
 app.config.globalProperties.$emitter = emitter;
-
+app.config.globalProperties.$ctable = reactive({});
 app.mount('#app');
 
 export default app;

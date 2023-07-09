@@ -14,6 +14,9 @@ export default createVuetify({
     VTextarea: {
       density: 'compact',
     },
+    VCheckbox: {
+      density: 'compact',
+    },
   },
 });
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides

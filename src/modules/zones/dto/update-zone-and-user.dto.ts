@@ -1,4 +1,4 @@
-import { IsEmail, IsOptional, IsString, Length } from 'class-validator';
+import { IsBoolean, IsEmail, IsOptional, IsString, Length } from 'class-validator';
 
 export class UpdateZoneAndUserDto {
   @IsOptional()
@@ -22,4 +22,8 @@ export class UpdateZoneAndUserDto {
   @IsString()
   @IsOptional()
   name: string;
+
+  @IsBoolean()
+  @IsOptional()
+  markedAsDeleted: boolean;
 }

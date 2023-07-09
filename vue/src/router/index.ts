@@ -26,6 +26,22 @@ const router = createRouter({
           },
         },
         {
+          path: 'settings',
+          name: 'settings',
+          component: () => import('../views/Settings.vue'),
+          meta: {
+            roles: ['user'],
+          },
+        },
+        {
+          path: 'accsettings',
+          name: 'accsettings',
+          component: () => import('../views/AccSettings.vue'),
+          meta: {
+            roles: ['user'],
+          },
+        },
+        {
           path: 'clients',
           name: 'clients',
           component: () => import('../views/Clients.vue'),

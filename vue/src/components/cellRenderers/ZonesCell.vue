@@ -1,6 +1,12 @@
 <template>
-  <div class="d-flex justify-center">
-    <v-btn size="small" variant="text" icon="mdi-pencil" @click="edit"></v-btn>
+  <div>
+    <div class="d-flex justify-center" v-if="!params.data.markedAsDeleted">
+      <v-btn size="small" variant="text" icon="mdi-pencil" @click="edit"></v-btn>
+      <v-btn size="small" variant="text" icon="mdi-delete" @click="remove"></v-btn>
+    </div>
+    <div class="d-flex justify-center" v-else>
+      <v-btn size="small" variant="text" icon="mdi-restore" @click="restore"></v-btn>
+    </div>
   </div>
 </template>
 
@@ -11,6 +17,17 @@ export default {
     return {};
   },
   methods: {
+    remove() {
+      this.$emitter.emit('openDialog', {
+        header: 'Удалить город',
+        message: 'Вы уверены, что хотите удалить город?',
+        eventName: 'delete-zone',
+        id: this.params.data.id,
+      });
+    },
+    restore() {
+      this.$emitter.emit('restore-zone', this.params.data.id);
+    },
     edit() {
       this.$emitter.emit('openModal', {
         url: `/zones/${this.params.data.id}`,
@@ -41,11 +58,6 @@ export default {
           {
             key: 'newPassword',
             label: 'Пароль',
-            type: 'password',
-          },
-          {
-            key: 'confirmPassword',
-            label: 'Подтверждение пароля',
             type: 'password',
           },
         ],

@@ -10,6 +10,7 @@ import { StatusModule } from './modules/status/status.module';
 import { ZonesModule } from './modules/zones/zones.module';
 import { LaunchesModule } from './modules/launches/launches.module';
 import { GamesModule } from './modules/games/games.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
@@ -25,7 +26,6 @@ import { GamesModule } from './modules/games/games.module';
             singleLine: true,
           },
         },
-
         level: 'info',
       },
     }),
@@ -35,6 +35,7 @@ import { GamesModule } from './modules/games/games.module';
     ZonesModule,
     LaunchesModule,
     GamesModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [],

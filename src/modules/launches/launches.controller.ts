@@ -1,3 +1,4 @@
+import { FindZoneQueryDto } from './dto/find-zone-query.dto';
 import { DateRangeDto } from './dto/date-range.dto';
 import { Controller, Get, UseGuards, Query, Req } from '@nestjs/common';
 import { LaunchesService } from './launches.service';
@@ -18,7 +19,7 @@ export class LaunchesController {
   }
 
   @Get()
-  findOne(@Query('zoneId') id: string) {
-    return this.launchesService.findByZone(+id);
+  find(@Query() findZoneQueryDto: FindZoneQueryDto, @Req() req: RequestWithUser) {
+    return this.launchesService.find(findZoneQueryDto, req.user);
   }
 }

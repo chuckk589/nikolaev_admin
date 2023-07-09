@@ -6,8 +6,10 @@
         <span>Добро пожаловать, {{ authStore.name }}!</span>
       </div>
     </v-card-title>
-    <v-card-text>
-      <div class="d-flex">
+    <v-card-text class="w-50">
+      <v-select @update:modelValue="getStats" v-model="userZone" style="width: 320px" label="Выберите зону" :items="$ctable.userZones"></v-select>
+
+      <div class="d-flex justify-space-around">
         <v-sheet class="mr-5" :elevation="5" :height="200" :width="200" rounded>
           <div class="d-flex flex-column h-100 align-center justify-center">
             <div>{{ stats.thisWeek }}</div>
@@ -27,8 +29,25 @@
         </v-sheet>
       </div>
       <h3 class="mt-10">Ваш баланс: 10 000 руб. (хватит на 20 запусков)</h3>
-
-      <div class="d-flex text-center mt-10">
+      <v-table class="mt-10" style="max-width: 1500px">
+        <thead>
+          <tr>
+            <th class="text-center">№</th>
+            <th class="text-center">Название игры</th>
+            <th class="text-center">Дата запуска</th>
+            <th class="text-center">Время запуска</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in lastLaunches" :key="item.id">
+            <td class="text-center">{{ item.id }}</td>
+            <td class="text-center">{{ item.gameAlias }}</td>
+            <td class="text-center">{{ new Date(item.createdAt).toLocaleDateString() }}</td>
+            <td class="text-center">{{ new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</td>
+          </tr>
+        </tbody>
+      </v-table>
+      <div class="d-flex text-center mt-10 justify-space-around">
         <v-sheet class="mr-5" :elevation="5" :height="200" :width="200" rounded>
           <div class="d-flex flex-column h-100 align-center justify-center">
             <div class="mb-2">Игровой лаунчер</div>
@@ -63,19 +82,33 @@ export default {
   data() {
     return {
       authStore: useAuthStore(),
-      dates: [],
-      allTime: null,
-      rangeTime: null,
-      games: [],
       stats: {},
+      lastLaunches: [],
+      userZone: null,
     };
   },
-  computed: {},
+  methods: {
+    getStats(newVal) {
+      const params = new URLSearchParams();
+      newVal && params.append('zoneId', newVal);
+      this.$http({ method: 'GET', url: `/v1/launches/num?${params.toString()}` }).then((res) => {
+        this.stats = res.data;
+      });
+      params.append('lastNum', 5);
+      this.$http({ method: 'GET', url: `/v1/launches?${params.toString()}` }).then((res) => {
+        this.lastLaunches = res.data;
+      });
+      // this.$http({ method: 'GET', url: `/v1/launches/num?zoneId=${this.userZone}` }).then((res) => {
+      //   this.stats = res.data;
+      // });
+      // this.$http({ method: 'GET', url: `/v1/launches?lastNum=5&zoneId=${this.userZone}` }).then((res) => {
+      //   this.lastLaunches = res.data;
+      // });
+    },
+  },
   mounted() {
     this.authStore.$reset();
-    this.$http({ method: 'GET', url: `/v1/launches/num` }).then((res) => {
-      this.stats = res.data;
-    });
+    this.getStats();
   },
 };
 </script>

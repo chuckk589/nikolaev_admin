@@ -8,31 +8,11 @@ import { Launches } from '../entities/Launches';
 
 export class DevSeeder extends Seeder {
   async run(em: EntityManager): Promise<void> {
-    em.create(UserRoles, {
-      name: 'Пользователь',
-      alias: 'user',
-    });
-    em.create(UserRoles, {
-      name: 'Главный администратор',
-      alias: 'admin',
-    });
-    em.create(Users, {
-      email: 'admin@admin.ru',
-      password: 'adminadmin',
-      role: em.getReference(UserRoles, 2),
-    });
     em.create(Users, {
       email: 'user@user.ru',
       password: 'useruser',
       role: em.getReference(UserRoles, 1),
     });
-    ['bounce', 'stormsquad', 'fixies', 'snow', 'quest', 'host', 'painball', 'stormsquad2', 'squeakycleaners', 'mercs'].forEach(
-      (alias, index) => {
-        em.create(Games, {
-          name: alias,
-        });
-      },
-    );
     for (let i = 0; i < zones.length; i++) {
       const zone = zones[i];
       em.create(Zones, {

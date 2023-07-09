@@ -1,7 +1,10 @@
+import { OmitType } from '@nestjs/mapped-types';
 import { Users } from 'src/modules/mikroorm/entities/Users';
+import { CreateUserDto } from './create-user.dto';
 
-export class RetrieveUserDto {
+export class RetrieveUserDto extends OmitType(CreateUserDto, ['password', 'zone'] as const) {
   constructor(user: Partial<Users>) {
+    super();
     this.id = user.id.toString();
     this.name = user.name;
     this.surname = user.surname;
@@ -9,8 +12,4 @@ export class RetrieveUserDto {
     this.email = user.email;
   }
   id: string;
-  name: string;
-  surname: string;
-  phone: string;
-  email: string;
 }

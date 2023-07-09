@@ -26,11 +26,11 @@
       </div>
       <div style="margin-top: 100px" class="d-flex flex-column">
         <v-select @update:modelValue="getStatsInRange($event)" item-title="name" item-value="id" v-model="rangeTime" style="max-width: 320px" label="Выберите игру" :items="games"></v-select>
-        <date-picker @change="getStatsInRange(null)" v-model:value="dates" range></date-picker>
+        <date-picker placeholder="Выберите период" @change="getStatsInRange(null)" v-model:value="dates" range></date-picker>
       </div>
       <v-sheet class="mr-5" :elevation="5" :height="200" :width="200" rounded>
         <div class="d-flex flex-column h-100 align-center justify-center">
-          <div>{{ stats.allTime }}</div>
+          <div>{{ stats2.allTime }}</div>
           <div>Колво запусков</div>
         </div>
       </v-sheet>
@@ -41,6 +41,7 @@
 <script>
 import DatePicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
+import 'vue-datepicker-next/locale/ru';
 export default {
   name: 'DashboardView',
   components: { DatePicker },
@@ -51,6 +52,7 @@ export default {
       rangeTime: null,
       games: [],
       stats: {},
+      stats2: {},
     };
   },
   methods: {
@@ -65,7 +67,7 @@ export default {
         .map((key) => key + '=' + query[key])
         .join('&');
       this.$http({ method: 'GET', url: `/v1/launches/num?${queryString}` }).then((res) => {
-        this.stats = res.data;
+        this.stats2 = res.data;
       });
     },
     getStats(id) {

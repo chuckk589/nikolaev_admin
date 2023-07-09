@@ -1,5 +1,5 @@
 import { UpdateZoneAndUserDto } from './dto/update-zone-and-user.dto';
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { ZonesService } from './zones.service';
 import { RoleGuard } from '../auth/guards/role.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -21,5 +21,11 @@ export class ZonesController {
   @UseGuards(RoleGuard(['admin']))
   update(@Param('id') id: string, @Body() updateZoneAndUserDto: UpdateZoneAndUserDto) {
     return this.zonesService.update(+id, updateZoneAndUserDto);
+  }
+
+  @Delete(':id')
+  @UseGuards(RoleGuard(['admin']))
+  remove(@Param('id') id: string) {
+    return this.zonesService.remove(+id);
   }
 }

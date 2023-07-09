@@ -40,7 +40,7 @@ export class Users extends CustomBaseEntity {
   @Property({ nullable: true })
   password?: string;
 
-  @ManyToOne({ entity: () => UserRoles, nullable: true })
+  @ManyToOne({ entity: () => UserRoles })
   role?: UserRoles;
 
   @OneToMany(() => Zones, (zone) => zone.user)

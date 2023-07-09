@@ -53,6 +53,9 @@ export class Zones {
   @Property({ columnType: 'tinyint(1)', default: false })
   hideOnAdminPanel = false;
 
+  @Property({ columnType: 'tinyint(1)', default: false })
+  markedAsDeleted = false;
+
   @OneToMany(() => Launches, (launch) => launch.zone)
   launches = new Collection<Launches>(this);
 

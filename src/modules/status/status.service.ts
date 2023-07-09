@@ -5,17 +5,21 @@ import { RetrieveStatusDto } from './dto/retrieve-status.dto';
 import { UpdateConfigDto } from './dto/update-config.dto';
 import { UserRoles } from '../mikroorm/entities/UserRoles';
 import { Zones } from '../mikroorm/entities/Zones';
+import { AuthUser } from 'src/types/interfaces';
 
 @Injectable()
 export class StatusService {
   constructor(private readonly em: EntityManager) {}
 
-  async findAll(): Promise<Record<string, RetrieveStatusDto[]>> {
+  async findAll(user: AuthUser): Promise<Record<string, RetrieveStatusDto[]>> {
     const roles = await this.em.find(UserRoles, {});
     const zones = await this.em.find(Zones, {});
     return {
       roles: roles.map((roles) => new RetrieveStatusDto({ title: roles.name, value: roles.id.toString() })),
-      zones: [...new Set(zones.map((zone) => new RetrieveStatusDto({ title: zone.alias, value: zone.id.toString() })))],
+      zones: zones.filter((zone) => !zone.user).map((zone) => new RetrieveStatusDto({ title: zone.alias, value: zone.id.toString() })),
+      userZones: zones
+        .filter((zone) => zone.user?.id == user.sub)
+        .map((zone) => new RetrieveStatusDto({ title: zone.alias, value: zone.id.toString() })),
     };
   }
 

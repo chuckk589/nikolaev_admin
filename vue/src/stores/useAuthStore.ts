@@ -6,6 +6,7 @@ export const useAuthStore = defineStore({
   state: () => ({
     role: localStorage.getItem('role'),
     name: localStorage.getItem('name'),
+    sub: localStorage.getItem('sub'),
   }),
   actions: {
     logout() {
@@ -16,11 +17,13 @@ export const useAuthStore = defineStore({
       localStorage.removeItem('jwt');
       localStorage.removeItem('role');
       localStorage.removeItem('name');
+      localStorage.removeItem('sub');
     },
     updateStorage(token: string) {
       const payload = parseJwt(token);
       localStorage.setItem('jwt', token);
       localStorage.setItem('role', payload.role);
+      localStorage.setItem('sub', payload.sub);
       localStorage.setItem('name', payload.name + ' ' + payload.surname);
       return payload;
     },
